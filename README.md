@@ -66,7 +66,7 @@ Develop an **automated alert** to:
 
 ### Pipeline
 
-![Pipeline diagram](assets/pipeline_ru_version.png)
+![Pipeline diagram](assets/pipeline_gb_version.png)
 
 ---
 
