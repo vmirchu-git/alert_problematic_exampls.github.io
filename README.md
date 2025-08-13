@@ -64,7 +64,7 @@ Develop an **automated alert** to:
 * Cross-team integration of analytical solutions.
 * Development of explainable ranking algorithms for model improvement.
 
-### Пайплайн
+### Pipeline
 
 ![Pipeline diagram](assets/pipeline_ru_version.png)
 
