@@ -49,6 +49,7 @@ Develop an **automated alert** to:
 * Increased accuracy on Elastic nodes, especially in high-frequency areas.
 * **1.5+ years** of stable production use.
 * Became part of the overall model quality control process.
+* Brief screenshots can be viewed in the visualization folder
 
 ### Business Impact
 
@@ -117,6 +118,7 @@ Develop an **automated alert** to:
 * Рост точности на нодах Elastic, особенно в частотных зонах.
 * **1.5+ года** стабильной работы в продакшене.
 * Стало частью общего процесса контроля качества моделей.
+* Краткие скрины можно посмотреть в папке visualization
 
 ### Бизнес-эффект
 
