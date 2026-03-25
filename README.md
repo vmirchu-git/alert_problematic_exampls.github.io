@@ -3,9 +3,6 @@
 ---
 
 ## 🇬🇧 English version
-
-**Timeline:** Q1 2024 — Present
-**Role:** ML/NLP Engineer
 **Tech stack:** Python • pandas • SQL • ETL • BI tools
 
 ### Context
@@ -58,7 +55,7 @@ Develop an **automated alert** to:
 * Increased stability of business logic and query understanding.
 * Delivered a scalable, explainable, and ML-light algorithm with measurable accuracy impact.
 
-### Key Skills Highlighted for ML/NLP Engineer
+### Key Skills 
 
 * Automated data quality control for ML/NLP.
 * ETL for error analysis in text datasets.
@@ -72,9 +69,6 @@ Develop an **automated alert** to:
 ---
 
 ## 🇷🇺 Русский вариант
-
-**Timeline:** Q1 2024 — по настоящее время
-**Роль:** ML/NLP инженер
 **Технологии:** Python • pandas • SQL • ETL • BI инструменты
 
 ### Контекст
@@ -97,7 +91,7 @@ Develop an **automated alert** to:
 * **Python** для агрегации, фильтрации и ранжирования по частоте и значимости ошибок.
 * Критерии фильтрации:
 
-  * ≥ 2 ошибки на одном примере.
+  * ≥ n ошибок на одном gold примере.
   * Исключение технических и устаревших категорий.
   * Приоритет ошибок, влияющих на работу модели.
 
@@ -116,7 +110,7 @@ Develop an **automated alert** to:
 
 * **>20x снижение** количества ошибок на одном примере.
 * Рост точности на нодах Elastic, особенно в частотных зонах.
-* **1.5+ года** стабильной работы в продакшене.
+* **1.5+ года** стабильной работы с алертом.
 * Стало частью общего процесса контроля качества моделей.
 * Краткие скрины можно посмотреть в папке visualization
 
@@ -127,9 +121,8 @@ Develop an **automated alert** to:
 * Повышена устойчивость бизнес-логики и понимания запросов пользователей.
 * Создан масштабируемый, объяснимый и несложный алгоритм с прямым влиянием на точность моделей.
 
-### Ключевые навыки ML/NLP инженера
-
-* Автоматизация контроля качества данных для ML/NLP.
+### Ключевые навыки
+* Автоматизация контроля качества данных для ML.
 * ETL-процессы для анализа ошибок в текстовых данных.
 * Кросс-командная интеграция аналитических решений.
 * Разработка объяснимых алгоритмов ранжирования для улучшения моделей.
