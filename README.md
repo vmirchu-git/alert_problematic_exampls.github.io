@@ -1,132 +1,65 @@
+<p align="center">
+  <img src="assets/accuracy_causal_chart.png" alt="Classification accuracy before, during, and after the alert gap" width="100%">
+</p>
+
+<p align="right"><a href="README.ru.md">Русская версия →</a></p>
+
 # Automatic Alert for Incorrect Auto-Labeling in Chatbot Intents
 
----
+![Python](https://img.shields.io/badge/Python-pandas-14131a?style=flat-square&labelColor=14131a&color=7a1f2b)
+![SQL](https://img.shields.io/badge/SQL-ETL-14131a?style=flat-square&labelColor=14131a&color=7a1f2b)
+![BI](https://img.shields.io/badge/BI-reporting-14131a?style=flat-square&labelColor=14131a&color=7a1f2b)
+![status](https://img.shields.io/badge/status-production%20since%202024-14131a?style=flat-square&labelColor=14131a&color=c9a227)
 
-## 🇬🇧 English version
-**Tech stack:** Python • pandas • SQL • ETL • BI tools
+> **Note on source code.** This repository documents methodology, design decisions, and results only. The implementation is proprietary to the employer where this project was built and is not published here.
 
-### Context
+A simple, explainable ranking algorithm that surfaces the 15 chatbot intents with the most critical auto-labeling errors every two weeks — and, unusually for a project like this, comes with direct before/after evidence that it actually mattered.
 
-Frequent auto-labeling errors in chatbot intents reduced intent accuracy, introduced noise into training datasets, and decreased trust in automation results. Manual detection was time-consuming and incomplete, slowing down systematic quality improvements.
+## The evidence, first
 
-### Goal
+The chart above isn't a mocked-up illustration — it's what actually happened when the team stopped using this alert for about seven months and later reinstated it. While the alert was active, classification accuracy climbed steadily (≈91.5% → ≈93.5%). Once it stopped being used, accuracy drifted down over the following months to as low as ≈87.6% — a relative decline of roughly 6%. Within weeks of reinstating the alert, accuracy climbed back above 98% — a relative recovery of over 12% from the low point. This wasn't a designed causal experiment with a control group, but the timing lines up closely enough to treat it as strong, if informal, evidence that the alert was doing real work, not just producing reports nobody needed.
 
-Develop an **automated alert** to:
+**Downstream effect on the classifier.** The classifier model itself is trained on labeled examples that pass through this full-text layer, so cleaner labeling upstream should, in principle, also lift the model's own accuracy over time. That's what shows up in practice too — accuracy climbed steadily from ≈68.6% to a peak of ≈75.8% over several months. (The metric later declined for an unrelated reason — model overfitting — so that portion is left out here to keep the two effects from being conflated.)
 
-* Detect the **top-15 intents** with the most critical auto-labeling errors.
-* Prioritize examples requiring description or formulation corrections.
-* Enable quick response to quality issues, improving prediction accuracy.
+<p align="center">
+  <img src="assets/model_accuracy_chart.png" alt="Downstream classifier model accuracy trend" width="100%">
+</p>
 
-### Approach
+## Problem
 
-**Data Pipeline**
+Auto-labeling errors in chatbot intents were frequent enough to noticeably reduce intent accuracy, introduce noise into training datasets, and erode trust in automation results generally. Manual detection of these errors was slow and incomplete, which meant systematic quality improvement kept stalling.
 
-* **SQL** script to extract labeling error data.
-* **Python** for aggregation, filtering, and ranking by error frequency and significance.
-* Filtering criteria:
+## Approach
 
-  * ≥ 2 errors on the same example.
-  * Exclusion of technical/obsolete categories.
-  * Prioritization of errors affecting model performance.
+**Data pipeline.** A SQL script extracts labeling error data; Python aggregates, filters, and ranks it by frequency and significance. Filtering rules were deliberately simple and explainable: at least 2 errors on the same gold example, exclusion of technical or obsolete categories, and priority given to errors that actually affect model performance rather than edge cases.
 
-**Alert System**
+**Alert system.** A report is generated automatically every two weeks, surfacing the top 15 problem intents ranked by correction priority, and feeding into the team's BI tooling for visual review. The illustrative example below shows the shape of that output — accuracy per example color-coded by severity, paired with a suggested corrective action:
 
-* Automated report generated **bi-weekly**.
-* Displays **top-15 problem intents** with highest correction priority.
-* Integrated into BI tools for visual analysis.
+<p align="center">
+  <img src="assets/priority_table.svg" alt="Illustrative example of the ranked priority table" width="100%">
+</p>
 
-**Cross-Team Integration**
+**Why accuracy at this stage matters so much.** One of the inputs this alert monitors is the full-text matching layer — an early, low-cost stage in intent classification that's meant to catch messages cheaply before heavier, more expensive methods are needed downstream. Because everything after it depends on getting these matches right, even small labeling errors here compound significantly by the time they reach later stages.
 
-* Filtering parameters selected collaboratively with each chatbot direction team.
-* Scaled to all chatbot directions and transferred to the NLP team.
+**Cross-team integration.** Filtering parameters were agreed on jointly with each chatbot product team rather than set unilaterally, then the solution was scaled across all chatbot directions and handed over to the NLP team for ongoing ownership.
 
-### Results
+## Results
 
-* **>20x reduction** in per-example errors.
-* Increased accuracy on Elastic nodes, especially in high-frequency areas.
-* **1.5+ years** of stable production use.
-* Became part of the overall model quality control process.
-* Brief screenshots can be viewed in the visualization folder
+- More than a 20× reduction in errors per labeled example.
+- In stable production use for 1.5+ years (since at least 2024) — long enough to observe the natural before/after comparison above.
+- Became a standard part of the broader model quality control process, not a one-off report.
 
-### Business Impact
+## Business impact
 
-* Improved data quality in training sets.
-* Reduced time to detect and fix critical errors.
-* Increased stability of business logic and query understanding.
-* Delivered a scalable, explainable, and ML-light algorithm with measurable accuracy impact.
+- Improved the quality of training data by catching labeling errors before they compounded downstream.
+- Reduced the time needed to find and fix critical errors, replacing an incomplete manual process.
+- Increased the stability of the underlying business logic and query understanding — with the accuracy chart above as direct evidence of what happens when that stability is left unmonitored.
+- Delivered a scalable, fully explainable algorithm — simple enough that everyone involved understood exactly why an intent was flagged, with a measurable link to model accuracy.
 
-### Key Skills 
+## Tech stack
 
-* Automated data quality control for ML/NLP.
-* ETL for error analysis in text datasets.
-* Cross-team integration of analytical solutions.
-* Development of explainable ranking algorithms for model improvement.
-
-### Pipeline
-
-![Pipeline diagram](assets/pipeline_gb_version.png)
+Python · pandas · SQL · ETL · BI reporting tools
 
 ---
 
-## 🇷🇺 Русский вариант
-**Технологии:** Python • pandas • SQL • ETL • BI инструменты
-
-### Контекст
-
-Частые ошибки авторазметки в интентах чатбота снижали их точность, вносили шум в тренировочные данные и уменьшали доверие к результатам автоматизации. Ручной поиск занимал много времени и был неполным, что мешало системному улучшению качества.
-
-### Цель
-
-Разработать **автоматический алерт**, который:
-
-* Выявляет **топ-15 интентов** с наибольшим числом критичных ошибок авторазметки.
-* Фокусируется на примерах, требующих доработки описаний и формулировок.
-* Позволяет быстро реагировать на проблемы и повышать точность предсказаний.
-
-### Подход
-
-**Data Pipeline**
-
-* **SQL**-скрипт для получения данных об ошибках разметки.
-* **Python** для агрегации, фильтрации и ранжирования по частоте и значимости ошибок.
-* Критерии фильтрации:
-
-  * ≥ n ошибок на одном gold примере.
-  * Исключение технических и устаревших категорий.
-  * Приоритет ошибок, влияющих на работу модели.
-
-**Система алертов**
-
-* Автоматическая генерация отчета **раз в две недели**.
-* Выводит **топ-15 проблемных интентов** с наибольшим приоритетом исправления.
-* Интеграция с BI-инструментами для визуального анализа.
-
-**Кросс-командная интеграция**
-
-* Параметры фильтрации подбирались совместно с командами всех направлений чатбота.
-* Решение масштабировано на все направления и передано команде NLP.
-
-### Результаты
-
-* **>20x снижение** количества ошибок на одном примере.
-* Рост точности на нодах Elastic, особенно в частотных зонах.
-* **1.5+ года** стабильной работы с алертом.
-* Стало частью общего процесса контроля качества моделей.
-* Краткие скрины можно посмотреть в папке visualization
-
-### Бизнес-эффект
-
-* Повышено качество данных в тренировочных выборках.
-* Сокращено время поиска и исправления критичных ошибок.
-* Повышена устойчивость бизнес-логики и понимания запросов пользователей.
-* Создан масштабируемый, объяснимый и несложный алгоритм с прямым влиянием на точность моделей.
-
-### Ключевые навыки
-* Автоматизация контроля качества данных для ML.
-* ETL-процессы для анализа ошибок в текстовых данных.
-* Кросс-командная интеграция аналитических решений.
-* Разработка объяснимых алгоритмов ранжирования для улучшения моделей.
-
-### Пайплайн
-
-![Pipeline diagram](assets/pipeline_ru_version.png)
+<sub>Individual project completed as part of a Data Analytics role. Described here for portfolio purposes; production code is not publicly available.</sub>
